@@ -1,27 +1,37 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:inspector_v1/IsolatePage.dart';
 import 'MyHomePage.dart';
 import 'Draw.dart';
 
-List<CameraDescription> cameras;
-
-Future<void> main() async{
-  cameras = await availableCameras();
+void main(){
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
     .then((_){
     runApp(MyApp());
+    BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   });
+}
+
+void backgroundFetchHeadlessTask() async {
+  print('[backgroundFetch] HEADLESS event received');
+  BackgroundFetch.finish();
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MyHomePage(title: 'Title',cameras: cameras,);
+    return MyHomePage(title: 'Title',);
 //  return MaterialApp(
 //    debugShowCheckedModeBanner: false,
 //    home: Draw(),
 //  );
+
+//    return MaterialApp(
+//      debugShowCheckedModeBanner: false,
+//      home: IsolatePage(),
+//    );
   }
 }
