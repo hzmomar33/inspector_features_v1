@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inspector_v1/PhotoEditor.dart';
 import 'package:path_provider/path_provider.dart';
 import '../Draw.dart';
 
@@ -35,13 +37,13 @@ class _Camera_tabState extends State<Camera_tab> {
       cameras = await availableCameras();
       controller = new CameraController(cameras[0], ResolutionPreset.high);
       await controller.initialize();
+      print(controller.value.aspectRatio);
     }on CameraException catch (_){
       print('Camera Failed');
     }
     setState(() {
       isReady = true;
     });
-
   }
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,7 @@ class _Camera_tabState extends State<Camera_tab> {
 //          MaterialPageRoute(builder: (context) => Gallery(image: filePath,))
 //      );
     }
-
+    Size screenSize = MediaQuery.of(context).size;
     return
       isReady ?
         AspectRatio(
@@ -121,7 +123,7 @@ class _Camera_tabState extends State<Camera_tab> {
 //                                        images = dataFromDrawPage;
 //                                      });
                                       Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => Draw(imagePath: images[index],)
+                                        builder: (context) => PhotoEditor(imagePath: images[index],)
                                       ));
                                     },
                                     child: Image.file(File(images[index])),
@@ -150,7 +152,9 @@ class _Camera_tabState extends State<Camera_tab> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                CircularProgressIndicator(),
+                Platform.isAndroid ?
+                    CircularProgressIndicator(strokeWidth: 1,) :
+                    CupertinoActivityIndicator()
 //                Text('Get Available Cameras..')
               ],
             ),

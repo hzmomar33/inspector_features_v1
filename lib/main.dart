@@ -10,13 +10,7 @@ void main(){
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
     .then((_){
     runApp(MyApp());
-    BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   });
-}
-
-void backgroundFetchHeadlessTask() async {
-  print('[backgroundFetch] HEADLESS event received');
-  BackgroundFetch.finish();
 }
 
 class MyApp extends StatelessWidget {
