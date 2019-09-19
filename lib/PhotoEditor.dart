@@ -7,7 +7,7 @@ import 'dart:ui' as ui;
 import 'package:inspector_v1/Draw.dart';
 import 'package:inspector_v1/model/DrawingPoints.dart';
 
-enum SelectedMode {StrokeWidth, Color}
+enum SelectedMode {StrokeWidth, Color, noMode}
 class PhotoEditor extends StatefulWidget {
   final String imagePath;
   PhotoEditor({Key key, this.imagePath}): super(key : key);
@@ -19,7 +19,7 @@ class _PhotoEditorState extends State<PhotoEditor> {
   ui.Image bckImage;
   List<DrawingPoints> points = List();
   double strokeWidth = 5.0;
-  bool _changeMode = false;
+  bool showBottom = false;
   List pointsIndexList = List();
   Color selectedColor = Colors.black;
   List<Color> colors = [
@@ -159,7 +159,7 @@ class _PhotoEditorState extends State<PhotoEditor> {
                           onPressed: (){
                             setState(() {
                               selectedMode = SelectedMode.StrokeWidth;
-                              _changeMode = !_changeMode;
+                              showBottom = true;
                             });
                           },
                         ),
@@ -168,7 +168,7 @@ class _PhotoEditorState extends State<PhotoEditor> {
                           onPressed: (){
                             setState(() {
                               selectedMode = SelectedMode.Color;
-                              _changeMode = !_changeMode;
+                              showBottom = true;
                             });
                           },
                         ),
@@ -176,8 +176,11 @@ class _PhotoEditorState extends State<PhotoEditor> {
                           icon: Icon(Icons.undo, color: Colors.white,),
                           onPressed: (){
                             setState(() {
-                              points.removeRange(pointsIndexList[pointsIndexList.length - 1], points.length - 1);
-                              pointsIndexList.removeLast();
+                              if(points.length > 0){
+                                points.removeRange(pointsIndexList[pointsIndexList.length - 1], points.length - 1);
+                                pointsIndexList.removeLast();
+                              }
+                              showBottom = false;
                             });
                           },
                         ),
@@ -186,17 +189,20 @@ class _PhotoEditorState extends State<PhotoEditor> {
                           onPressed: (){
                             setState(() {
                               points.clear();
+                              showBottom = false;
                             });
                           },
                         ),
                         IconButton(
                           icon: Icon(Icons.save, color: Colors.white,),
-                          onPressed: (){},
+                          onPressed: (){
+                            showBottom = false;
+                          },
                         ),
                       ],
                     ),
                     Visibility(
-                      visible: _changeMode,
+                      visible: showBottom,
                       child: selectedMode == SelectedMode.StrokeWidth ?
                       Slider(
                         divisions: 10,
